@@ -266,14 +266,13 @@ def validar_mesas_en_todas_las_salas(driver, wait):
             else:
                 print("      📝 Sin comentarios")
 
+                
+
             print("      ✅ Mesa validada correctamente")
 
         print(f"\n   ✅ Sala {nombre_sala} validada correctamente")
 
     print("\n🎉 TODAS LAS SALAS FUERON VALIDADAS CORRECTAMENTE")
-
-
-
 
 # ==============================
 # MAIN
