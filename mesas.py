@@ -217,6 +217,7 @@ def validar_mesas_en_todas_las_salas(driver, wait):
             raise Exception(f"❌ No se encontraron mesas en {nombre_sala}")
 
         print(f"   ✔ Mesas encontradas: {len(mesas)}")
+        
 
         for index, mesa in enumerate(mesas, start=1):
 
@@ -231,6 +232,48 @@ def validar_mesas_en_todas_las_salas(driver, wait):
             print(f"      👥 Asientos: {asientos}")
             print(f"      ⏰ Hora: {hora_pedido}")
             print(f"      💲 Total: {precio_total}")
+            
+        # =========================
+        # VALIDAR ESTADO REAL DE LA MESA
+        # =========================
+
+        try:
+            # Subir hasta el contenedor card real
+            card = mesa.find_element(By.XPATH, "ancestor::div[contains(@class,'card')]")
+
+            # Obtener la barra superior real
+            barra_estado = card.find_element(By.CLASS_NAME, "labelTop")
+
+            color_barra = barra_estado.value_of_css_property("background-color")
+            color_barra = color_barra.replace(" ", "")
+
+            print(f"      🎨 Color barra detectado: {color_barra}")
+
+            if color_barra in ["rgba(0,163,16,1)", "rgb(0,163,16)"]:
+                print("      🟢 Mesa desocupada")
+
+            elif color_barra in ["rgba(224,70,0,1)", "rgb(224,70,0)"]:
+                print("      🔴 Mesa ocupada")
+
+            elif color_barra in ["rgba(204,204,204,1)", "rgb(204,204,204)"]:
+                print("      ⚪ Mesa inactiva")
+
+            else:
+                raise Exception(
+                    f"❌ Estado no identificado en mesa {numero_mesa} → {color_barra}"
+                )
+
+        except Exception as e:
+            raise Exception(
+                f"❌ No se pudo validar estado en mesa {numero_mesa}: {str(e)}"
+            )
+
+
+
+
+
+
+            
 
             # =========================
             # VALIDACIONES FLEXIBLES
@@ -266,13 +309,13 @@ def validar_mesas_en_todas_las_salas(driver, wait):
             else:
                 print("      📝 Sin comentarios")
 
-                
-
             print("      ✅ Mesa validada correctamente")
 
         print(f"\n   ✅ Sala {nombre_sala} validada correctamente")
 
     print("\n🎉 TODAS LAS SALAS FUERON VALIDADAS CORRECTAMENTE")
+
+    
 
 # ==============================
 # MAIN
